@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package advanced;
 
-option go_package = "github.com/tokopedia/gripmock/example/advanced";
+option go_package = "github.com/Hongwei-W/gripmock/example/advanced";
 
 // The Gripmock service definition.
 service Gripmock {

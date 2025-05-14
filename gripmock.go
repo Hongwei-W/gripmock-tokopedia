@@ -12,7 +12,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/tokopedia/gripmock/stub"
+	"github.com/Hongwei-W/gripmock/stub"
 )
 
 func main() {

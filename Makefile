@@ -2,8 +2,8 @@
 
 # Variables
 BINARY_NAME=gripmock
-DOCKER_IMAGE=tkpd/gripmock
-PLATFORMS=linux/amd64,linux/arm64
+DOCKER_IMAGE=wanghw222/gripmock
+PLATFORMS=linux/amd64
 GOPATH:=$(shell go env GOPATH)
 
 # Include test makefile

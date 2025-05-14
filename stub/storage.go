@@ -112,12 +112,12 @@ func findStub(stub *findStubPayload) (*Output, error) {
 
 	closestMatch := []closeMatch{}
 	var match *storage
-	for _, stubrange := range stubs {
+	for i, stubrange := range stubs {
 		if expect := stubrange.Input.Equals; expect != nil {
 			cm := closeMatch{rule: "equals", expect: expect}
 			if equals(stub.Data, expect) {
 				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
-					match = &stubrange
+					match = &stubStorage[stub.Service][stub.Method][i]
 					break
 				}
 			}
@@ -129,7 +129,7 @@ func findStub(stub *findStubPayload) (*Output, error) {
 			cm := closeMatch{rule: "equals_unordered", expect: expect}
 			if equalsUnordered(stub.Data, expect) {
 				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
-					match = &stubrange
+					match = &stubStorage[stub.Service][stub.Method][i]
 					break
 				}
 			}
@@ -141,7 +141,7 @@ func findStub(stub *findStubPayload) (*Output, error) {
 			cm := closeMatch{rule: "contains", expect: expect}
 			if contains(expect, stub.Data) {
 				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
-					match = &stubrange
+					match = &stubStorage[stub.Service][stub.Method][i]
 					break
 				}
 			}
@@ -153,7 +153,7 @@ func findStub(stub *findStubPayload) (*Output, error) {
 			cm := closeMatch{rule: "matches", expect: expect}
 			if matches(expect, stub.Data) {
 				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
-					match = &stubrange
+					match = &stubStorage[stub.Service][stub.Method][i]
 					break
 				}
 			}

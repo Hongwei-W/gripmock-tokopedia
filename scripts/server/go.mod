@@ -2,10 +2,10 @@ module grpc
 
 go 1.23
 
-replace github.com/tokopedia/gripmock/protogen => /go/src/github.com/tokopedia/gripmock/protogen
+replace github.com/Hongwei-W/gripmock/protogen => /go/src/github.com/Hongwei-W/gripmock/protogen
 
 require (
-	github.com/tokopedia/gripmock/protogen v0.0.0-00010101000000-000000000000
+	github.com/Hongwei-W/gripmock/protogen v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.72.0
 	google.golang.org/protobuf v1.36.6
 )

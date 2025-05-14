@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	pb "github.com/tokopedia/gripmock/protogen/example/advanced"
+	pb "github.com/Hongwei-W/gripmock/protogen/example/advanced"
 	"google.golang.org/grpc"
 )
 

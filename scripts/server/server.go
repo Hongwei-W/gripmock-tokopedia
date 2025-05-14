@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/tokopedia/gripmock/protogen"
+	"github.com/Hongwei-W/gripmock/protogen"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
 )

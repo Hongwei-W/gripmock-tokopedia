@@ -1,4 +1,4 @@
-module github.com/tokopedia/gripmock/protoc-gen-gripmock
+module github.com/Hongwei-W/gripmock/protoc-gen-gripmock
 
 go 1.21
 
