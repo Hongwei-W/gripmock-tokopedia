@@ -25,8 +25,9 @@ var stubStorage = stubMapping{}
 var requestStorage = []*request{}
 
 type storage struct {
-	Input  Input
-	Output Output
+	Input          Input
+	Output         Output
+	RemainingTimes int
 }
 
 type request struct {
@@ -58,6 +59,12 @@ func (sm *stubMapping) storeStub(stub *Stub) error {
 	strg := storage{
 		Input:  stub.Input,
 		Output: stub.Output,
+		RemainingTimes: func() int {
+			if stub.RemainingTimes == 0 {
+				return -1
+			}
+			return stub.RemainingTimes
+		}(),
 	}
 	if (*sm)[stub.Service] == nil {
 		(*sm)[stub.Service] = make(map[string][]storage)
@@ -79,10 +86,11 @@ func allRequests() []*request {
 }
 
 type closeMatch struct {
-	rule        string
-	expect      map[string]interface{}
-	headersRule string
-	headers     map[string]string
+	rule           string
+	expect         map[string]interface{}
+	headersRule    string
+	headers        map[string]string
+	remainingTimes int
 }
 
 func findStub(stub *findStubPayload) (*Output, error) {
@@ -103,46 +111,62 @@ func findStub(stub *findStubPayload) (*Output, error) {
 	}
 
 	closestMatch := []closeMatch{}
+	var match *storage
 	for _, stubrange := range stubs {
 		if expect := stubrange.Input.Equals; expect != nil {
 			cm := closeMatch{rule: "equals", expect: expect}
 			if equals(stub.Data, expect) {
-				if headersConstraintsApplied(stubrange.Input, stub, &cm) {
-					return &stubrange.Output, nil
+				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
+					match = &stubrange
+					break
 				}
 			}
+			cm.remainingTimes = stubrange.RemainingTimes
 			closestMatch = append(closestMatch, cm)
 		}
 
 		if expect := stubrange.Input.EqualsUnordered; expect != nil {
 			cm := closeMatch{rule: "equals_unordered", expect: expect}
 			if equalsUnordered(stub.Data, expect) {
-				if headersConstraintsApplied(stubrange.Input, stub, &cm) {
-					return &stubrange.Output, nil
+				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
+					match = &stubrange
+					break
 				}
 			}
+			cm.remainingTimes = stubrange.RemainingTimes
 			closestMatch = append(closestMatch, cm)
 		}
 
 		if expect := stubrange.Input.Contains; expect != nil {
 			cm := closeMatch{rule: "contains", expect: expect}
 			if contains(expect, stub.Data) {
-				if headersConstraintsApplied(stubrange.Input, stub, &cm) {
-					return &stubrange.Output, nil
+				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
+					match = &stubrange
+					break
 				}
 			}
+			cm.remainingTimes = stubrange.RemainingTimes
 			closestMatch = append(closestMatch, cm)
 		}
 
 		if expect := stubrange.Input.Matches; expect != nil {
 			cm := closeMatch{rule: "matches", expect: expect}
 			if matches(expect, stub.Data) {
-				if headersConstraintsApplied(stubrange.Input, stub, &cm) {
-					return &stubrange.Output, nil
+				if headersConstraintsApplied(stubrange.Input, stub, &cm) && (stubrange.RemainingTimes == -1 || stubrange.RemainingTimes > 0) {
+					match = &stubrange
+					break
 				}
 			}
+			cm.remainingTimes = stubrange.RemainingTimes
 			closestMatch = append(closestMatch, cm)
 		}
+	}
+
+	if match != nil {
+		if stub.FromGrpc {
+			match.RemainingTimes = match.RemainingTimes - 1
+		}
+		return &match.Output, nil
 	}
 
 	return nil, stubNotFoundError(stub, closestMatch)
@@ -281,6 +305,12 @@ func stubNotFoundError(stub *findStubPayload, closestMatches []closeMatch) error
 		headers := copyHeaders(closestMatch.headers)
 		template += "\nHeaders " + closestMatch.headersRule + ":\n" + renderFieldAsString(headers)
 	}
+	template += fmt.Sprintf("\n\nRemainingTimes: %s", func() string {
+		if closestMatch.remainingTimes == -1 {
+			return "unlimited"
+		}
+		return fmt.Sprintf("%d", closestMatch.remainingTimes)
+	}())
 
 	return fmt.Errorf(template)
 }
