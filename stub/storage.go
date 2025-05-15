@@ -163,7 +163,7 @@ func findStub(stub *findStubPayload) (*Output, error) {
 	}
 
 	if match != nil {
-		if stub.FromGrpc {
+		if stub.FromGrpc && match.RemainingTimes != -1 {
 			match.RemainingTimes = match.RemainingTimes - 1
 		}
 		return &match.Output, nil
