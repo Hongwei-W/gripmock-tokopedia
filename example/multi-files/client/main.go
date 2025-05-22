@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/tokopedia/gripmock/protogen/example/multi-files"
+	pb "github.com/Hongwei-W/gripmock/protogen/example/multi-files"
 	"google.golang.org/grpc"
 )
 

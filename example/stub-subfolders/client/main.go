@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/tokopedia/gripmock/protogen/example/stub-subfolders"
+	pb "github.com/Hongwei-W/gripmock/protogen/example/stub-subfolders"
 	"google.golang.org/grpc"
 )
 

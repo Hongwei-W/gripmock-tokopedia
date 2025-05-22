@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	pb "github.com/tokopedia/gripmock/protogen/example/multi-package"
-	multi_package "github.com/tokopedia/gripmock/protogen/example/multi-package/bar"
+	pb "github.com/Hongwei-W/gripmock/protogen/example/multi-package"
+	multi_package "github.com/Hongwei-W/gripmock/protogen/example/multi-package/bar"
 	"google.golang.org/grpc"
 )
 

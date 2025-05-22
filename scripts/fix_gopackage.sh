@@ -44,7 +44,7 @@ do
   # get the line number of "syntax" declaration
   syntaxLineNum="$(grep -n "syntax" "$newfile" | head -n 1 | cut -d: -f1)"
 
-  goPackageString="option go_package = \"github.com/tokopedia/gripmock/protogen/$dir\";"
+  goPackageString="option go_package = \"github.com/Hongwei-W/gripmock/protogen/$dir\";"
 
   # append our own go_package delcaration just below "syntax" declaration
   sed "${sed_i[@]}" "${syntaxLineNum}s~$~\n$goPackageString~" $newfile

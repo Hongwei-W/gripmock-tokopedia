@@ -12,28 +12,28 @@ RUN git clone --depth=1 https://github.com/google/protobuf.git /protobuf-repo &&
     mv /protobuf-repo/src/ /protobuf/ &&\
     rm -rf /protobuf-repo
 
-COPY . /go/src/github.com/tokopedia/gripmock
+COPY . /go/src/github.com/Hongwei-W/gripmock
 
 # create necessary dirs and export scripts
 RUN mkdir -p /proto /stubs /protogen &&\
-    chmod +x /go/src/github.com/tokopedia/gripmock/scripts/*.sh &&\
-    ln -s /go/src/github.com/tokopedia/gripmock/scripts/fix_gopackage.sh /bin/ &&\
-    ln -s /go/src/github.com/tokopedia/gripmock/scripts/start_server.sh /bin/ &&\
-    ln -s /go/src/github.com/tokopedia/gripmock/scripts/wait_for_gripmock.sh /bin/
+    chmod +x /go/src/github.com/Hongwei-W/gripmock/scripts/*.sh &&\
+    ln -s /go/src/github.com/Hongwei-W/gripmock/scripts/fix_gopackage.sh /bin/ &&\
+    ln -s /go/src/github.com/Hongwei-W/gripmock/scripts/start_server.sh /bin/ &&\
+    ln -s /go/src/github.com/Hongwei-W/gripmock/scripts/wait_for_gripmock.sh /bin/
 
 # Copy server.go and go.mod to /go/src/grpc
 # to build go module
 RUN mkdir -p /go/src/grpc &&\
-    cp /go/src/github.com/tokopedia/gripmock/scripts/server/server.go /go/src/grpc/ &&\
-    cp /go/src/github.com/tokopedia/gripmock/scripts/server/go.mod /go/src/grpc/
+    cp /go/src/github.com/Hongwei-W/gripmock/scripts/server/server.go /go/src/grpc/ &&\
+    cp /go/src/github.com/Hongwei-W/gripmock/scripts/server/go.mod /go/src/grpc/
 
 # install plugin protoc-gen-go-grpc
-WORKDIR /go/src/github.com/tokopedia/gripmock/protoc-gen-gripmock
+WORKDIR /go/src/github.com/Hongwei-W/gripmock/protoc-gen-gripmock
 
 # install generator plugin
 RUN rm -f pkged.go && pkger && go install -v
 
-WORKDIR /go/src/github.com/tokopedia/gripmock
+WORKDIR /go/src/github.com/Hongwei-W/gripmock
 
 # install gripmock
 RUN go install -v

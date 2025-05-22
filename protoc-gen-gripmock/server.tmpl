@@ -160,7 +160,7 @@ type response struct {
 }
 
 func findStub(ctx context.Context, service, method string, headers metadata.MD, in, out protoiface.MessageV1) error {
-	url := fmt.Sprintf("http://localhost%s/find", HTTP_PORT)
+	url := fmt.Sprintf("http://localhost%s/find?origin=grpc", HTTP_PORT)
 	var headersMap map[string]string
 	if headers != nil {
 		headersMap = make(map[string]string)

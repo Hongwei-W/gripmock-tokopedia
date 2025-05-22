@@ -1,15 +1,15 @@
-module github.com/tokopedia/gripmock
+module github.com/Hongwei-W/gripmock
 
 go 1.23
 
 toolchain go1.23.8
 
 require (
+	github.com/Hongwei-W/gripmock/protogen v0.0.0
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/golang/protobuf v1.5.4
 	github.com/lithammer/fuzzysearch v1.1.5
 	github.com/stretchr/testify v1.7.0
-	github.com/tokopedia/gripmock/protogen v0.0.0
 	golang.org/x/text v0.22.0
 	google.golang.org/grpc v1.72.0
 )
@@ -26,4 +26,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
 
-replace github.com/tokopedia/gripmock/protogen v0.0.0 => ./protogen
+replace github.com/Hongwei-W/gripmock/protogen v0.0.0 => ./protogen

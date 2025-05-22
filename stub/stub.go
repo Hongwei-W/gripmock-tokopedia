@@ -57,10 +57,11 @@ func responseError(err error, w http.ResponseWriter) {
 }
 
 type Stub struct {
-	Service string `json:"service"`
-	Method  string `json:"method"`
-	Input   Input  `json:"input"`
-	Output  Output `json:"output"`
+	Service        string `json:"service"`
+	Method         string `json:"method"`
+	Input          Input  `json:"input"`
+	Output         Output `json:"output"`
+	RemainingTimes int    `json:"remaining_times,omitempty"`
 }
 
 type Input struct {
@@ -159,10 +160,11 @@ func validateStub(stub *Stub) error {
 }
 
 type findStubPayload struct {
-	Service string                 `json:"service"`
-	Method  string                 `json:"method"`
-	Data    map[string]interface{} `json:"data"`
-	Headers map[string]string      `json:"headers,omitempty"`
+	Service  string                 `json:"service"`
+	Method   string                 `json:"method"`
+	Data     map[string]interface{} `json:"data"`
+	Headers  map[string]string      `json:"headers,omitempty"`
+	FromGrpc bool                   `json:"from_grpc"`
 }
 
 func handleFindStub(w http.ResponseWriter, r *http.Request) {
@@ -171,6 +173,11 @@ func handleFindStub(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		responseError(err, w)
 		return
+	}
+
+	stub.FromGrpc = false
+	if r.FormValue("origin") == "grpc" {
+		stub.FromGrpc = true
 	}
 
 	// due to golang implementation
