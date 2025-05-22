@@ -96,6 +96,23 @@ type closeMatch struct {
 func findStub(stub *findStubPayload) (*Output, error) {
 	mx.Lock()
 	defer mx.Unlock()
+
+	// print all the current stubs and their remaining times
+	fmt.Printf("\nNew findStub Service: %s, Method %s from gRPC server [%t]. Headers", stub.Service, stub.Method, stub.FromGrpc)
+	for k, v := range stub.Headers {
+		fmt.Printf("\t%s: %s", k, v)
+	}
+	fmt.Printf("Current stubs:\n")
+	for service, methods := range stubStorage {
+		for method, stubs := range methods {
+			for _, stubrange := range stubs {
+				fmt.Printf("Service: %s, Method: %s, RemainingTimes: %d\n", service, method, stubrange.RemainingTimes)
+			}
+		}
+	}
+
+	fmt.Printf("\n")
+
 	storeRequest(stub)
 	if _, ok := stubStorage[stub.Service]; !ok {
 		return nil, fmt.Errorf("can't find stub for Service: %s", stub.Service)
@@ -163,9 +180,10 @@ func findStub(stub *findStubPayload) (*Output, error) {
 	}
 
 	if match != nil {
-		if stub.FromGrpc && match.RemainingTimes != -1 {
-			match.RemainingTimes = match.RemainingTimes - 1
+		if stub.FromGrpc && match.RemainingTimes > 0 {
+			match.RemainingTimes--
 		}
+		fmt.Printf("Found stub for Service: %s, Method: %s, RemainingTimes: %d\n", stub.Service, stub.Method, match.RemainingTimes)
 		return &match.Output, nil
 	}
 
