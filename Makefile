@@ -3,7 +3,7 @@
 # Variables
 BINARY_NAME=gripmock
 DOCKER_IMAGE=wanghw222/gripmock
-PLATFORMS=linux/amd64
+PLATFORMS=linux/arm64,linux/amd64
 GOPATH:=$(shell go env GOPATH)
 
 # Include test makefile
@@ -35,6 +35,9 @@ docker-push:
 		exit 1; \
 	fi
 	@echo "Pushing Docker image..."
+	docker buildx rm builder
+	docker buildx create --name builder --use --driver docker-container --platform $(PLATFORMS)
+	docker buildx inspect --bootstrap
 	docker buildx build --push -t $(DOCKER_IMAGE):$(VERSION) --platform $(PLATFORMS) .
 
 # Run tests
